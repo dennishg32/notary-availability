@@ -1,42 +1,60 @@
  ```mermaid
  erDiagram
-     USER {
-         int user_id PK
-         string name
-         string email
-         string password
-     }
-     NOTARYPROFILE {
-         int notary_id PK
-         int user_id FK
-         string license_number
-         int experience_years
-     }
-     SERVICE {
-         int service_id PK
-         int notary_id FK
-         string service_type
-         string description
-         float price
-     }
-     APPOINTMENT {
-         int appointment_id PK
-         int user_id FK
-         int service_id FK
-         datetime appointment_date
-         string status
-     }
-     REVIEW {
-         int review_id PK
-         int appointment_id FK
-         int rating
-         string comment
-     }
 
-     USER ||--|| NOTARYPROFILE : "has"
-     NOTARYPROFILE ||--o{ SERVICE : "offers"
-     USER ||--o{ APPOINTMENT : "books"
-     SERVICE ||--o{ APPOINTMENT : "is booked in"
-     APPOINTMENT ||--|| REVIEW : "has"
+  classDiagram
+    class USER {
+        <<PK>> id : string
+        <<UK>> email : string
+        name : string
+        password : string
+        role : enum
+        phone : string
+        isApproved : boolean
+        address : string
+        city : string
+        hourlyRate : float
+        avgRating : float
+    }
+
+    class SERVICE {
+        <<PK>> id : string
+        <<UK>> name : string
+        description : string
+        basePrice : float
+        customPrice : float
+    }
+
+    class CERTIFICATION {
+        <<PK>> id : string
+        <<UK>> name : string
+        description : string
+        dateObtained : datetime
+        <<FK>> userId : string
+    }
+
+    class APPOINTMENT {
+        <<PK>> id : string
+        <<FK>> customerId : string
+        <<FK>> notaryId : string
+        <<FK>> serviceId : string
+        scheduledTime : datetime
+        status : string
+        totalCost : float
+    }
+
+    class REVIEW {
+        <<PK>> id : string
+        <<FK>> appointmentId : string
+        <<FK>> customerId : string
+        rating : int
+        comment : string
+    }
+
+    %% Relationships
+    USER "1" --> "*" SERVICE : offers
+    USER "1" --> "*" CERTIFICATION : holds
+    USER "1" --> "*" APPOINTMENT : books
+    APPOINTMENT "1" --> "1" REVIEW : has
+
  ```
  ````
